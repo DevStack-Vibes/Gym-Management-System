@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Manual Check-in</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="member_id" class="form-label">Member *</label>
+        <select class="form-select" id="member_id" name="member_id" required>
+            <option value="">Select a member</option>
+            {% for member in members %}
+            <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="check_in_time" class="form-label">Check-in Time *</label>
+        <input type="datetime-local" class="form-control" id="check_in_time" name="check_in_time" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="notes" class="form-label">Notes</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                  placeholder="Optional notes about this check-in"></textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Record Check-in</button>
+    <a href="{{ url_for('attendance') }}" class="btn btn-secondary">Cancel</a>
+</form>
+
+<script>
+// Set default value to current datetime
+document.addEventListener('DOMContentLoaded', function() {
+    const now = new Date();
+    // Format to YYYY-MM-DDTHH:MM (removing seconds and milliseconds)
+    const formattedNow = now.toISOString().slice(0, 16);
+    document.getElementById('check_in_time').value = formattedNow;
+});
+</script>
+{% endblock %}

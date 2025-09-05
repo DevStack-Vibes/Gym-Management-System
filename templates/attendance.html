@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Today's Attendance ({{ today.strftime('%Y-%m-%d') }})</h1>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Quick Check-in</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{{ url_for('manual_check_in') }}" class="btn btn-success w-100 mb-2">Manual Check-in</a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{{ url_for('attendance_devices') }}" class="btn btn-info w-100 mb-2">Device Management</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Keypad Check-in</h5>
+            </div>
+            <div class="card-body">
+                <form id="codeForm" class="d-flex">
+                    <input type="text" class="form-control me-2" id="checkinCode" placeholder="Enter member code" required>
+                    <button type="submit" class="btn btn-primary">Check-in</button>
+                </form>
+                <div id="codeMessage" class="mt-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Member</th>
+                <th>Check-in Time</th>
+                <th>Check-out Time</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in attendance_records %}
+            <tr>
+                <td>{{ record.member.first_name }} {{ record.member.last_name }}</td>
+                <td>{{ record.check_in.strftime('%H:%M:%S') }}</td>
+                <td>
+                    {% if record.check_out %}
+                        {{ record.check_out.strftime('%H:%M:%S') }}
+                    {% else %}
+                        <span class="text-warning">Still in gym</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-{% if record.attendance_type == 'biometric' %}primary{% elif record.attendance_type == 'code' %}info{% else %}secondary{% endif %}">
+                        {{ record.attendance_type }}
+                    </span>
+                </td>
+                <td>
+                    <span class="badge bg-{% if record.check_out %}success{% else %}warning{% endif %}">
+                        {% if record.check_out %}Checked out{% else %}Checked in{% endif %}
+                    </span>
+                </td>
+                <td>
+                    {% if not record.check_out %}
+                    <a href="{{ url_for('check_out', record_id=record.id) }}" class="btn btn-sm btn-danger">Check Out</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No attendance records for today</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.getElementById('codeForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const code = document.getElementById('checkinCode').value;
+    const messageDiv = document.getElementById('codeMessage');
+    
+    fetch('{{ url_for("check_in_code") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'code=' + encodeURIComponent(code)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            messageDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+            document.getElementById('checkinCode').value = '';
+            // Reload page after 2 seconds to show new record
+            setTimeout(() => { location.reload(); }, 2000);
+        } else {
+            messageDiv.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+        }
+    })
+    .catch(error => {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Error: ' + error + '</div>';
+    });
+});
+</script>
+{% endblock %}

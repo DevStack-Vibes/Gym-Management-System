@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Edit Payment</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="member_id" class="form-label">Member *</label>
+        <select class="form-select" id="member_id" name="member_id" required>
+            <option value="">Select a member</option>
+            {% for member in members %}
+            <option value="{{ member.id }}" {% if payment.member_id == member.id %}selected{% endif %}>
+                {{ member.first_name }} {{ member.last_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="amount" class="form-label">Amount (Rs) *</label>
+        <input type="number" class="form-control" id="amount" name="amount" 
+               value="{{ payment.amount }}" step="0.01" min="0" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="payment_method" class="form-label">Payment Method *</label>
+        <select class="form-select" id="payment_method" name="payment_method" required>
+            <option value="Credit Card" {% if payment.payment_method == 'Credit Card' %}selected{% endif %}>Credit Card</option>
+            <option value="Cash" {% if payment.payment_method == 'Cash' %}selected{% endif %}>Cash</option>
+            <option value="Bank Transfer" {% if payment.payment_method == 'Bank Transfer' %}selected{% endif %}>Bank Transfer</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="status" class="form-label">Status *</label>
+        <select class="form-select" id="status" name="status" required>
+            <option value="Completed" {% if payment.status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Pending" {% if payment.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Failed" {% if payment.status == 'Failed' %}selected{% endif %}>Failed</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="notes" class="form-label">Notes</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3">{{ payment.notes }}</textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Update Payment</button>
+    <a href="{{ url_for('payments') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

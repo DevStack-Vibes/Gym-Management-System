@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Register Member for Class</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="member_id" class="form-label">Member *</label>
+        <select class="form-select" id="member_id" name="member_id" required>
+            <option value="">Select a member</option>
+            {% for member in members %}
+            <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="class_id" class="form-label">Class *</label>
+        <select class="form-select" id="class_id" name="class_id" required>
+            <option value="">Select a class</option>
+            {% for class in classes %}
+            <option value="{{ class.id }}">{{ class.name }} ({{ class.schedule.strftime('%Y-%m-%d %H:%M') }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Register</button>
+    <a href="{{ url_for('class_registrations') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

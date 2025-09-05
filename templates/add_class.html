@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Add New Class</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="name" class="form-label">Class Name *</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label for="instructor" class="form-label">Instructor *</label>
+        <input type="text" class="form-control" id="instructor" name="instructor" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="schedule" class="form-label">Schedule *</label>
+        <input type="datetime-local" class="form-control" id="schedule" name="schedule" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="duration" class="form-label">Duration (minutes) *</label>
+        <input type="number" class="form-control" id="duration" name="duration" min="1" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="capacity" class="form-label">Capacity *</label>
+        <input type="number" class="form-control" id="capacity" name="capacity" min="1" required>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Add Class</button>
+    <a href="{{ url_for('classes') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

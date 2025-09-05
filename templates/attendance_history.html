@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Attendance History</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Member</th>
+                <th>Check-in Time</th>
+                <th>Check-out Time</th>
+                <th>Method</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in attendance_records.items %}
+            <tr>
+                <td>{{ record.check_in.strftime('%Y-%m-%d') }}</td>
+                <td>{{ record.member.first_name }} {{ record.member.last_name }}</td>
+                <td>{{ record.check_in.strftime('%H:%M:%S') }}</td>
+                <td>
+                    {% if record.check_out %}
+                        {{ record.check_out.strftime('%H:%M:%S') }}
+                    {% else %}
+                        <span class="text-warning">Not checked out</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-{% if record.attendance_type == 'biometric' %}primary{% elif record.attendance_type == 'code' %}info{% else %}secondary{% endif %}">
+                        {{ record.attendance_type }}
+                    </span>
+                </td>
+                <td>
+                    {% if record.check_out %}
+                        {{ (record.check_out - record.check_in).seconds // 3600 }}h {{ ((record.check_out - record.check_in).seconds % 3600) // 60 }}m
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No attendance records found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<nav aria-label="Attendance history pagination">
+    <ul class="pagination">
+        {% if attendance_records.has_prev %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('attendance_history', page=attendance_records.prev_num) }}">Previous</a>
+        </li>
+        {% endif %}
+        
+        {% for page_num in attendance_records.iter_pages() %}
+        <li class="page-item {% if page_num == attendance_records.page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('attendance_history', page=page_num) }}">{{ page_num }}</a>
+        </li>
+        {% endfor %}
+        
+        {% if attendance_records.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('attendance_history', page=attendance_records.next_num) }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}

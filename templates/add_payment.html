@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Record New Payment</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="member_id" class="form-label">Member *</label>
+        <select class="form-select" id="member_id" name="member_id" required>
+            <option value="">Select a member</option>
+            {% for member in members %}
+            <option value="{{ member.id }}">{{ member.first_name }} {{ member.last_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="amount" class="form-label">Amount (Rs &nbsp;) *</label>
+        <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="payment_method" class="form-label">Payment Method *</label>
+        <select class="form-select" id="payment_method" name="payment_method" required>
+            <option value="">Select payment method</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="notes" class="form-label">Notes</label>
+        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Record Payment</button>
+    <a href="{{ url_for('payments') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

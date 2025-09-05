@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Class Registrations</h1>
+
+<a href="{{ url_for('register_member_class') }}" class="btn btn-primary mb-3">Register Member for Class</a>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Member</th>
+                <th>Class</th>
+                <th>Registration Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for registration in registrations %}
+            <tr>
+                <td>{{ registration.id }}</td>
+                <td>{{ registration.member.first_name }} {{ registration.member.last_name }}</td>
+                <td>{{ registration.fitness_class.name }}</td>
+                <td>{{ registration.registration_date.strftime('%Y-%m-%d') }}</td>
+                <td>
+                    <a href="{{ url_for('delete_registration', id=registration.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this registration?')">Delete</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5" class="text-center">No registrations found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

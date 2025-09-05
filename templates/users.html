@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">User Management</h1>
+
+{% if current_user.role == 'admin' %}
+<a href="{{ url_for('add_user') }}" class="btn btn-primary mb-3">Add New User</a>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>
+                    <span class="badge bg-{% if user.role == 'admin' %}danger{% else %}info{% endif %}">
+                        {{ user.role }}
+                    </span>
+                </td>
+                <td>
+                    {% if user.id != current_user.id %}
+                    <a href="{{ url_for('delete_user', id=user.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                    {% else %}
+                    <span class="text-muted">Current user</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No users found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Access Denied</h4>
+    <p>You need administrator privileges to access this page.</p>
+</div>
+{% endif %}
+{% endblock %}

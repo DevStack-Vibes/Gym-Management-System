@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Add New User</h1>
+
+{% if current_user.role == 'admin' %}
+<form method="POST">
+    <div class="mb-3">
+        <label for="username" class="form-label">Username *</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="password" class="form-label">Password *</label>
+        <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    
+    <div class="mb-3">
+        <label for="role" class="form-label">Role *</label>
+        <select class="form-select" id="role" name="role" required>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Add User</button>
+    <a href="{{ url_for('users') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% else %}
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">Access Denied</h4>
+    <p>You need administrator privileges to access this page.</p>
+</div>
+{% endif %}
+{% endblock %}

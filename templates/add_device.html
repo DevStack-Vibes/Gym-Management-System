@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Add Attendance Device</h1>
+
+<form method="POST">
+    <div class="mb-3">
+        <label for="name" class="form-label">Device Name *</label>
+        <input type="text" class="form-control" id="name" name="name" required 
+               placeholder="e.g., Front Door Biometric, Reception Keypad">
+    </div>
+    
+    <div class="mb-3">
+        <label for="device_type" class="form-label">Device Type *</label>
+        <select class="form-select" id="device_type" name="device_type" required>
+            <option value="">Select device type</option>
+            <option value="biometric">Biometric/Fingerprint</option>
+            <option value="keypad">Keypad/Code Entry</option>
+        </select>
+    </div>
+    
+    <div class="mb-3">
+        <label for="location" class="form-label">Location *</label>
+        <input type="text" class="form-control" id="location" name="location" required 
+               placeholder="e.g., Main Entrance, Gym Floor, Reception">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Add Device</button>
+    <a href="{{ url_for('attendance_devices') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
